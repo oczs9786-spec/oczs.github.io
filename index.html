@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>oczs的个人网站</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #6a11cb;
+            --secondary: #2575fc;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --accent: #ff6b6b;
+            --gray: #8a8a8a;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: var(--light);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+        
+        header {
+            background: rgba(10, 10, 35, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo i {
+            color: var(--accent);
+            font-size: 2.2rem;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(to right, #ff6b6b, #6a11cb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 30px;
+        }
+        
+        nav a:hover, nav a.active {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 5rem 10%;
+            background: url('https://images.unsplash.com/photo-1505506874110-6a7a69069a08?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
+            position: relative;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(26, 26, 46, 0.9), rgba(26, 26, 46, 0.7));
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero h2 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #ff6b6b, #6a11cb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero p {
+            font-size: 1.4rem;
+            margin-bottom: 2.5rem;
+            color: #e0e0e0;
+        }
+        
+        .search-bar {
+            display: flex;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-radius: 50px;
+            overflow: hidden;
+        }
+        
+        .search-bar input {
+            flex: 1;
+            padding: 18px 25px;
+            border: none;
+            font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+        
+        .search-bar input::placeholder {
+            color: #b0b0b0;
+        }
+        
+        .search-bar button {
+            padding: 0 30px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border: none;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .search-bar button:hover {
+            background: linear-gradient(to right, #7a1de0, #3c85fd);
+        }
+        
+        .filter-section {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            padding: 2rem 5%;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 10px 25px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border-color: transparent;
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 0 5% 5rem;
+        }
+        
+        .media-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .media-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            border-color: rgba(106, 17, 203, 0.5);
+        }
+        
+        .media-preview {
+            height: 220px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .media-preview img, .media-preview video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .media-card:hover .media-preview img,
+        .media-card:hover .media-preview video {
+            transform: scale(1.05);
+        }
+        
+        .media-type {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .media-info {
+            padding: 20px;
+        }
+        
+        .media-info h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+        
+        .media-info p {
+            color: #b0b0b0;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        
+        .media-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-preview {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-preview:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-download {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+        }
+        
+        .btn-download:hover {
+            background: linear-gradient(to right, #7a1de0, #3c85fd);
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.4);
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px 0 40px;
+        }
+        
+        .page-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .page-btn:hover, .page-btn.active {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+        }
+        
+        footer {
+            background: rgba(10, 10, 35, 0.9);
+            padding: 2rem 5%;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        
+        footer p {
+            color: var(--gray);
+            margin-top: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            nav ul {
+                gap: 1rem;
+            }
+            
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .gallery {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .filter-section {
+                gap: 0.8rem;
+            }
+            
+            .filter-btn {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .gallery {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-bar input {
+                padding: 15px 20px;
+            }
+            
+            .search-bar button {
+                padding: 0 20px;
+            }
+        }
+
+        /* 预览模态框样式 */
+        .preview-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        
+        .modal-content img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+        
+        .download-info {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 30px;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .download-info a {
+            color: #4cc9f0;
+            text-decoration: none;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <!-- 网站头部 -->
+    <header>
+        <div class="logo">
+            <i class="fas fa-camera-retro"></i>
+            <h1>本子</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#" class="active">首页</a></li>
+                <li><a href="#">图片</a></li>
+                <li><a href="#">视频</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 主横幅区域 -->
+    <section class="hero">
+        <div class="hero-content">
+            <p>免费下载，无需其他</p>
+            <div class="search-bar"></div>
+        </div>
+    </section>
+
+    <!-- 分类筛选 -->
+    <section class="filter-section">
+        <button class="filter-btn active">全部</button>
+    </section>
+
+    <!-- 媒体展示区域 -->
+    <section class="gallery">
+        <!-- 图片卡片 1 -->
+        <div class="media-card" data-file="1.png" data-title="娘化星璇柱">
+            <div class="media-preview">
+                <img src="oczs.github.io/1.png" alt="1">
+                <div class="media-type">
+                    <i class="fas fa-image"></i> 图片
+                </div>
+            </div>
+            <div class="media-info">
+                <h3>娘化星璇柱</h3>
+                <div class="media-meta">
+                    <span><i class="fas fa-download"></i> 1245次下载</span>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-preview"><i class="fas fa-expand"></i> 预览</button>
+                    <button class="btn btn-download"><i class="fas fa-download"></i> 下载</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 图片卡片 2 -->
+        <div class="media-card" data-file="2.jpg" data-title="森林迷雾">
+            <div class="media-preview">
+                <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="森林迷雾">
+                <div class="media-type">
+                    <i class="fas fa-image"></i> 图片
+                </div>
+            </div>
+            <div class="media-info">
+                <h3>森林迷雾</h3>
+                <div class="media-meta">
+                    <span><i class="fas fa-download"></i> 2103次下载</span>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-preview"><i class="fas fa-expand"></i> 预览</button>
+                    <button class="btn btn-download"><i class="fas fa-download"></i> 下载</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 图片卡片 3 -->
+        <div class="media-card" data-file="3.jpg" data-title="山丘与云">
+            <div class="media-preview">
+                <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="自然景观">
+                <div class="media-type">
+                    <i class="fas fa-image"></i> 图片
+                </div>
+            </div>
+            <div class="media-info">
+                <h3>山丘与云</h3>
+                <div class="media-meta">
+                    <span><i class="fas fa-download"></i> 1872次下载</span>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-preview"><i class="fas fa-expand"></i> 预览</button>
+                    <button class="btn btn-download"><i class="fas fa-download"></i> 下载</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 图片卡片 4 -->
+        <div class="media-card" data-file="4.jpg" data-title="金色麦田">
+            <div class="media-preview">
+                <img src="https://images.unsplash.com/photo-1426604966848-d7adac402bff?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="田野风光">
+                <div class="media-type">
+                    <i class="fas fa-image"></i> 图片
+                </div>
+            </div>
+            <div class="media-info">
+                <h3>金色麦田</h3>
+                <div class="media-meta">
+                    <span><i class="fas fa-download"></i> 1567次下载</span>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-preview"><i class="fas fa-expand"></i> 预览</button>
+                    <button class="btn btn-download"><i class="fas fa-download"></i> 下载</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 图片卡片 5 -->
+        <div class="media-card" data-file="5.jpg" data-title="海滩日落">
+            <div class="media-preview">
+                <img src="https://images.unsplash.com/photo-1505142468610-359e7d316be0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="海滩日落">
+                <div class="media-type">
+                    <i class="fas fa-image"></i> 图片
+                </div>
+            </div>
+            <div class="media-info">
+                <h3>海滩日落</h3>
+                <div class="media-meta">
+                    <span><i class="fas fa-download"></i> 1983次下载</span>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-preview"><i class="fas fa-expand"></i> 预览</button>
+                    <button class="btn btn-download"><i class="fas fa-download"></i> 下载</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 图片卡片 6 -->
+        <div class="media-card" data-file="6.jpg" data-title="城市夜景">
+            <div class="media-preview">
+                <img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="城市夜景">
+                <div class="media-type">
+                    <i class="fas fa-image"></i> 图片
+                </div>
+            </div>
+            <div class="media-info">
+                <h3>城市夜景</h3>
+                <div class="media-meta">
+                    <span><i class="fas fa-download"></i> 2245次下载</span>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-preview"><i class="fas fa-expand"></i> 预览</button>
+                    <button class="btn btn-download"><i class="fas fa-download"></i> 下载</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 分页控件 -->
+    <div class="pagination">
+        <button class="page-btn"><i class="fas fa-chevron-left"></i></button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <button class="page-btn">4</button>
+        <button class="page-btn">5</button>
+        <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+    </div>
+
+    <!-- 网站底部 -->
+    <footer>
+        <p>© 2023 oczs的个人网站</p>
+        <p>所有内容均遵循CC0协议，可免费下载使用</p>
+    </footer>
+
+    <!-- 图片预览模态框 -->
+    <div class="preview-modal" id="previewModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closePreview">&times;</span>
+            <img id="modalImage" src="" alt="预览图片">
+            <div class="download-info">
+                <a href="#" id="directDownload">直接下载原图</a>
+                <span>或右键图片选择"图片另存为"</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 图片数据（实际项目中可能来自服务器）
+        const imageData = {
+            "1.png": {
+                title: "娘化星璇柱",
+                url: "https://images.unsplash.com/photo-1501854140801-50d01698950b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+                downloads: 1245
+            },
+            "2.jpg": {
+                title: "森林迷雾",
+                url: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+                downloads: 2103
+            },
+            "3.jpg": {
+                title: "山丘与云",
+                url: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+                downloads: 1872
+            },
+            "4.jpg": {
+                title: "金色麦田",
+                url: "https://images.unsplash.com/photo-1426604966848-d7adac402bff?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+                downloads: 1567
+            },
+            "5.jpg": {
+                title: "海滩日落",
+                url: "https://images.unsplash.com/photo-1505142468610-359e7d316be0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+                downloads: 1983
+            },
+            "6.jpg": {
+                title: "城市夜景",
+                url: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80",
+                downloads: 2245
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 筛选按钮交互
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // 下载按钮功能
+            const downloadButtons = document.querySelectorAll('.btn-download');
+            downloadButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const card = this.closest('.media-card');
+                    const filename = card.getAttribute('data-file');
+                    const title = card.getAttribute('data-title');
+                    
+                    // 更新下载状态
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 下载中...';
+                    this.disabled = true;
+                    
+                    // 实际下载功能
+                    downloadImage(filename, title);
+                    
+                    // 更新下载计数（模拟）
+                    const downloadCount = card.querySelector('.media-meta span');
+                    const count = parseInt(downloadCount.textContent.match(/\d+/)[0]);
+                    downloadCount.textContent = `<i class="fas fa-download"></i> ${count + 1}次下载`;
+                    
+                    // 3秒后重置按钮
+                    setTimeout(() => {
+                        this.innerHTML = '<i class="fas fa-download"></i> 下载';
+                        this.disabled = false;
+                    }, 3000);
+                });
+            });
+            
+            // 预览按钮功能
+            const previewButtons = document.querySelectorAll('.btn-preview');
+            previewButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const card = this.closest('.media-card');
+                    const filename = card.getAttribute('data-file');
+                    const title = card.getAttribute('data-title');
+                    
+                    openPreview(filename, title);
+                });
+            });
+            
+            // 关闭预览按钮
+            document.getElementById('closePreview').addEventListener('click', closePreview);
+            
+            // 直接下载按钮
+            document.getElementById('directDownload').addEventListener('click', function(e) {
+                e.preventDefault();
+                const filename = this.getAttribute('data-file');
+                const title = this.getAttribute('data-title');
+                downloadImage(filename, title);
+                closePreview();
+            });
+        });
+        
+        // 下载图片功能
+        function downloadImage(filename, title) {
+            // 获取图片URL（这里使用更高分辨率的图片）
+            const imageUrl = imageData[filename].url;
+            
+            // 创建临时下载链接
+            const link = document.createElement('a');
+            link.href = imageUrl;
+            link.download = `${title}.jpg`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        // 打开预览
+        function openPreview(filename, title) {
+            const modal = document.getElementById('previewModal');
+            const modalImage = document.getElementById('modalImage');
+            const downloadLink = document.getElementById('directDownload');
+            
+            // 设置图片和下载链接
+            modalImage.src = imageData[filename].url;
+            downloadLink.setAttribute('data-file', filename);
+            downloadLink.setAttribute('data-title', title);
+            
+            // 显示模态框
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // 关闭预览
+        function closePreview() {
+            const modal = document.getElementById('previewModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // 点击模态框外部关闭
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('previewModal');
+            if (event.target === modal) {
+                closePreview();
+            }
+        });
+    </script>
+</body>
+</html>
